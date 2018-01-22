@@ -1,7 +1,8 @@
-const gulp = require('gulp'),
-      csso = require('gulp-csso'),
-      sass = require('gulp-sass'),
-      del  = require('del');
+const gulp   = require('gulp'),
+      csso   = require('gulp-csso'),
+      sass   = require('gulp-sass'),
+			del    = require('del'),
+			minify = require('gulp-minify');
 
 // Delete all CSS files
 gulp.task('css:clean', function() {
@@ -32,9 +33,10 @@ gulp.task('js:clean', function() {
 	return del('dist/js/*.js', { force: true });
 });
 
-// Copy all JavaScript files 
-gulp.task('js:copy', ['js:clean'], function() {
+// Compile all JavaScript files 
+gulp.task('js:compile', ['js:clean'], function() {
 	return gulp.src('src/js/*.js')
+		.pipe(minify())
 		.pipe(gulp.dest('dist/js'));
 });
 
@@ -52,7 +54,7 @@ gulp.task('static:copy', ['static:clean'], function() {
 			.pipe(gulp.dest('dist'));
 });
 
-gulp.task('build', ['css:compile', 'html:copy', 'js:copy', 'static:copy']);
+gulp.task('build', ['css:compile', 'html:copy', 'js:compile', 'static:copy']);
 
 gulp.task('develop', ['build'], function() {
 	gulp.watch('src/scss/*', ['css:compile']); // watch for changes in SCSS
